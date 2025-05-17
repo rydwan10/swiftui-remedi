@@ -39,19 +39,20 @@ struct ContentView: View {
                 .tag(Tab.history)
                 .toolbar(.hidden, for: .tabBar)
 
-            Text("Profile")
+            ProfileView()
                 .tag(Tab.profile)
                 .toolbar(.hidden, for: .tabBar)
         }
         .overlay(alignment: .bottom) {
             if tabBarVisibility.showTabBar {
                 CustomTabBar(selectedTab: $selectedTab)
+                    .background(Color.gray100.ignoresSafeArea(edges: .bottom))
             }
         }
-        .background(
-            Color.gray25
-                .ignoresSafeArea(edges: .bottom)
-        )
+//        .background(
+//            Color.gray25
+//                .ignoresSafeArea(edges: .bottom)
+//        )
     }
 }
 
@@ -60,46 +61,47 @@ struct CustomTabBar: View {
     @State var isSheetPresented: Bool = false
 
     var body: some View {
-        HStack {
-            Spacer()
-            TabBarButton(tab: .home, icon: (selectedTab == .home) ? Ph.house.fill : Ph.house.regular, label: "Home", selectedTab: $selectedTab)
-            Spacer()
-            TabBarButton(tab: .schedule, icon: (selectedTab == .schedule) ? Ph.clock.fill : Ph.clock.regular, label: "Schedule", selectedTab: $selectedTab)
-            Spacer()
-            Button(action: {
-                isSheetPresented.toggle()
-            }) {
-                VStack {
-                    (Ph.plusCircle.fill)
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundStyle(.brand600)
+        ZStack(alignment: .top) {
+            VStack(spacing: 0) {
+                Divider()
+                    .background(Color.gray.opacity(0.5))
+                    .frame(height: 1)
+                    .frame(maxWidth: .infinity)
 
-                    Text("Add")
-                        .style(.textSm(.regular))
-                        .foregroundStyle(.gray600)
+                HStack {
+                    Spacer()
+                    TabBarButton(tab: .home, icon: (selectedTab == .home) ? Ph.house.fill : Ph.house.regular, label: "Home", selectedTab: $selectedTab)
+                    Spacer()
+                    TabBarButton(tab: .schedule, icon: (selectedTab == .schedule) ? Ph.clock.fill : Ph.clock.regular, label: "Schedule", selectedTab: $selectedTab)
+                    Spacer()
+                    Button(action: {
+                        isSheetPresented.toggle()
+                    }) {
+                        VStack {
+                            (Ph.plusCircle.fill)
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundStyle(.brand600)
+
+                            Text("Add")
+                                .style(.textSm(.regular))
+                                .foregroundStyle(.gray600)
+                        }
+                        .padding(8)
+                    }
+                    .sheet(isPresented: $isSheetPresented) {
+                        AddMedicineView()
+                    }
+                    Spacer()
+                    TabBarButton(tab: .history, icon: (selectedTab == .history) ? Ph.archive.fill : Ph.archive.regular, label: "History", selectedTab: $selectedTab)
+                    Spacer()
+                    TabBarButton(tab: .profile, icon: (selectedTab == .profile) ? Ph.user.fill : Ph.user.regular, label: "Profile", selectedTab: $selectedTab)
+                    Spacer()
                 }
-
-                .padding(8)
+                .padding(.vertical, 10)
             }
-            .sheet(isPresented: $isSheetPresented) {
-                AddMedicineView()
-            }
-            Spacer()
-            TabBarButton(tab: .history, icon: (selectedTab == .history) ? Ph.archive.fill : Ph.archive.regular, label: "History", selectedTab: $selectedTab)
-            Spacer()
-            TabBarButton(tab: .profile, icon: (selectedTab == .profile) ? Ph.user.fill : Ph.user.regular, label: "Profile", selectedTab: $selectedTab)
-            Spacer()
+            .background(Color.white.ignoresSafeArea(edges: .bottom))
         }
-        .background(.gray25)
-        .overlay(
-            Divider()
-                .background(Color.gray.opacity(0.5))
-                .frame(height: 1)
-                .frame(maxWidth: .infinity),
-            alignment: .top
-        )
-        .padding(.vertical, 10)
     }
 }
 
@@ -132,9 +134,9 @@ struct TabBarButton: View {
 #Preview("ContentView") {
     @Previewable var medicineDataManager = MedicineDataManager()
     @Previewable var mainTabBarVisibility = MainTabBarVisibility()
-    
+
     ContentView()
-        
+
         .environmentObject(medicineDataManager)
         .environmentObject(mainTabBarVisibility)
 }

@@ -4,7 +4,7 @@ struct MonthlyCalendarView: View {
     @EnvironmentObject private var medicineDataManager: MedicineDataManager
     @EnvironmentObject private var mainTabBarVisibility: MainTabBarVisibility
     @State private var showSheet: Bool = false
-    @State private var sheetDate: Date = Date()
+    @State private var sheetDate: Date = .init()
     @State private var showFilterSheet: Bool = false
     @State private var filterFrom: Date = Calendar.current.date(byAdding: .month, value: -6, to: Calendar.current.startOfDay(for: Date())) ?? Date()
     @State private var filterTo: Date = Calendar.current.date(byAdding: .month, value: 6, to: Calendar.current.startOfDay(for: Date())) ?? Date()
@@ -99,7 +99,7 @@ struct MonthlyCalendarView: View {
                                                             .frame(width: 36, height: 36)
                                                     } else if hasMedicine {
                                                         Circle()
-                                                            .stroke(Color.primary, lineWidth: 2)
+                                                            .stroke(Color.brand600, lineWidth: 2)
                                                             .frame(width: 36, height: 36)
                                                     }
                                                     Text("\(calendar.component(.day, from: date))")
@@ -142,7 +142,7 @@ struct MonthlyCalendarView: View {
             }
             .onDisappear {
                 withAnimation {
-mainTabBarVisibility.showTabBar = true
+                    mainTabBarVisibility.showTabBar = true
                 }
             }
             .sheet(isPresented: $showSheet) {
@@ -241,7 +241,7 @@ mainTabBarVisibility.showTabBar = true
                             DatePicker(
                                 "To",
                                 selection: $filterTo,
-                                in: filterFrom...calendar.date(byAdding: .year, value: 1, to: filterFrom)!,
+                                in: filterFrom ... calendar.date(byAdding: .year, value: 1, to: filterFrom)!,
                                 displayedComponents: [.date]
                             )
                         }
